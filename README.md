@@ -1,2 +1,5 @@
 # TheBackrooms
- Juego 3D hecho en c++ y SFML 
+Los Backrooms
+Laberinto, niveles y creepypastas de los backrooms
+Diego Enrique Garcia Alpizar #6 4D
+Rafael de jesus ramos chavez # 4D
