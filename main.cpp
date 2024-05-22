@@ -7,7 +7,7 @@ int main()
 {
     RenderWindow window(VideoMode(800, 600), "SFML works!");
     window.setFramerateLimit(50);
-    CircleShape shape(29.f); // Reducí el tamaño del círculo para que sea más visible en la ventana pequeña
+    CircleShape shape(5.f); // Reducí el tamaño del círculo para que sea más visible en la ventana pequeña
     shape.setFillColor(Color::White);
 
     // Posición inicial del personaje
