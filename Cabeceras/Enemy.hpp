@@ -7,7 +7,7 @@ using namespace sf;
 
 class Enemy {
 public:
-    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(5.f) {
+    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(10.f), health(100) {
         shape.setFillColor(Color::Red); // Color del enemigo
     }
 
@@ -48,10 +48,19 @@ public:
         window.draw(shape);
     }
 
+    void takeDamage(int amount) {
+        health -= amount;
+        if (health <= 0) {
+            // Si la salud del enemigo llega a cero o menos, lo eliminamos
+            position = Vector2f(-1000.f, -1000.f); // Movemos al enemigo fuera de la pantalla
+        }
+    }
+
 private:
     Vector2f position;
     float speed;
     CircleShape shape; // Forma del enemigo
+    int health;
 };
 
 #endif
