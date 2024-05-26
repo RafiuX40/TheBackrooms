@@ -31,7 +31,7 @@ int main() {
     RenderWindow window(VideoMode(800, 600), "SFML works!");
     window.setFramerateLimit(50);
     CircleShape shape(5.f); 
-    shape.setFillColor(Color::Blue);
+    shape.setFillColor(Color::White);
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 5.0f; 
     int cellSize = 25;
@@ -68,6 +68,23 @@ int main() {
 
         // Actualizamos la posición del enemigo persiguiendo al jugador
         enemy.update(newPlayerPosition);
+
+        // Obtener la celda actual y la nueva celda del mapa
+        int currentCellX = static_cast<int>(playerPosition.x + shape.getRadius()) / cellSize;
+        int currentCellY = static_cast<int>(playerPosition.y + shape.getRadius()) / cellSize;
+        int newCellX = static_cast<int>(newPlayerPosition.x + shape.getRadius()) / cellSize;
+        int newCellY = static_cast<int>(newPlayerPosition.y + shape.getRadius()) / cellSize;
+
+        // Comprobar colisiones con el mapa
+        if (worldMap[newCellY][newCellX] == 5) {
+            // El jugador llega a la celda roja (gana el juego)
+            shape.setFillColor(Color::Green); // Cambia el color para indicar victoria
+        } else if (worldMap[newCellY][newCellX] != 0) {
+            // Si el jugador intenta moverse a una celda no permitida, no actualiza su posición
+            newPlayerPosition = playerPosition;
+        }
+
+
 
         // Comprobamos si el jugador está lo suficientemente cerca del enemigo para hacer daño
         float distance = sqrt(pow(playerPosition.x - enemy.getPosition().x, 2) + pow(playerPosition.y - enemy.getPosition().y, 2));
