@@ -38,19 +38,18 @@ int main() {
             newPlayerPosition.x += playerSpeed;
 
         // Limitamos la posición del jugador dentro de la ventana
-        if (newPlayerPosition.x < 0)
-            newPlayerPosition.x = 0;
-        if (newPlayerPosition.y < 0)
-            newPlayerPosition.y = 0;
-        if (newPlayerPosition.x > window.getSize().x - shape.getRadius() * 2)
-            newPlayerPosition.x = window.getSize().x - shape.getRadius() * 2;
-        if (newPlayerPosition.y > window.getSize().y - shape.getRadius() * 2)
-            newPlayerPosition.y = window.getSize().y - shape.getRadius() * 2;
+        if (newPlayerPosition.x < 0 || newPlayerPosition.x > screenWidth ||
+            newPlayerPosition.y < 0 || newPlayerPosition.y > screenHeight) {
+            // Si el jugador llega a una de las orillas de la ventana, cambiamos el mapa
+            currentMapIndex = (currentMapIndex + 1) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
+            // Posicionamos al jugador en una posición inicial en el nuevo mapa
+            newPlayerPosition = Vector2f(100.f, 100.f);
+        }
 
         // Comprobamos colisiones con las paredes para el jugador
-        int playerCellX = static_cast<int>(newPlayerPosition.x + shape.getRadius()) / cellSize;
-        int playerCellY = static_cast<int>(newPlayerPosition.y + shape.getRadius()) / cellSize;
-        if (worldMap[playerCellY][playerCellX] != 0) {
+        int playerCellX = static_cast<int>(newPlayerPosition.x) / cellSize;
+        int playerCellY = static_cast<int>(newPlayerPosition.y) / cellSize;
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0) {
             // Si el jugador intenta moverse a una celda no permitida, no actualizamos su posición
             newPlayerPosition = playerPosition;
         }
@@ -67,7 +66,7 @@ int main() {
             for (int j = 0; j < mapWidth; ++j) {
                 RectangleShape cell(Vector2f(cellSize, cellSize));
                 cell.setPosition(j * cellSize, i * cellSize);
-                switch (worldMap[i][j]) {
+                switch (worldMaps[currentMapIndex][i][j]) {
                     case 1:
                         cell.setFillColor(Color::White); // Pared
                         break;
@@ -97,9 +96,7 @@ int main() {
         // Dibujamos al jugador y al enemigo
         shape.setPosition(playerPosition);
         window.draw(shape);
-
         enemy.draw(window);
-
         window.display();
     }
 

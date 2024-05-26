@@ -23,7 +23,7 @@ public:
         // Comprobamos colisiones con las paredes para el enemigo
         int newCellX = static_cast<int>(newPosition.x) / cellSize;
         int newCellY = static_cast<int>(newPosition.y) / cellSize;
-        if (worldMap[newCellY][newCellX] != 0) {
+        if (worldMaps[currentMapIndex][newCellY][newCellX] != 0) {
             // Si el enemigo intenta moverse a una celda no permitida, no actualizamos su posición
             return;
         }
