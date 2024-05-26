@@ -1,12 +1,16 @@
 #include <SFML/Graphics.hpp>
-#include <math.h>
+#include <cmath>
 #include "Cabeceras/map.hpp"
 
 using namespace sf;
 
+int cellSize = 25; // Declaración de cellSizes
+
 class Enemy {
 public:
-    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd) {}
+    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(5.f) {
+        shape.setFillColor(Color::Red); // Color del enemigo
+    }
 
     void update(const Vector2f& playerPos) {
         // Calculamos el vector de dirección hacia el jugador
@@ -14,27 +18,50 @@ public:
         // Normalizamos el vector de dirección
         float magnitude = sqrt(direction.x * direction.x + direction.y * direction.y);
         direction /= magnitude;
-        // Movemos al enemigo en dirección al jugador
-        position += direction * speed;
+        // Movemos al enemigo en dirección al jugador con una velocidad constante
+        Vector2f newPosition = position + direction * speed;
+
+        // Comprobamos colisiones con las paredes para el enemigo
+        int newCellX = static_cast<int>(newPosition.x) / cellSize;
+        int newCellY = static_cast<int>(newPosition.y) / cellSize;
+        if (worldMap[newCellY][newCellX] != 0) {
+            // Si el enemigo intenta moverse a una celda no permitida, no actualizamos su posición
+            return;
+        }
+
+        position = newPosition;
     }
 
     const Vector2f& getPosition() const {
         return position;
     }
 
+    void setPosition(const Vector2f& newPosition) {
+        position = newPosition;
+    }
+
+    const FloatRect getGlobalBounds() const {
+        return shape.getGlobalBounds();
+    }
+
+    void draw(RenderWindow& window) {
+        shape.setPosition(position);
+        window.draw(shape);
+    }
+
 private:
     Vector2f position;
     float speed;
+    CircleShape shape; // Forma del enemigo
 };
 
 int main() {
     RenderWindow window(VideoMode(800, 600), "SFML works!");
     window.setFramerateLimit(50);
-    CircleShape shape(5.f); 
-    shape.setFillColor(Color::White);
+    CircleShape shape(5.f);
+    shape.setFillColor(Color::Blue);
     Vector2f playerPosition(100.f, 100.f);
-    float playerSpeed = 5.0f; 
-    int cellSize = 25;
+    float playerSpeed = 5.0f;
 
     Enemy enemy(Vector2f(500.f, 500.f), 3.0f); // Creamos un enemigo en una posición y velocidad específicas
 
@@ -55,7 +82,7 @@ int main() {
             newPlayerPosition.x -= playerSpeed;
         if (Keyboard::isKeyPressed(Keyboard::D))
             newPlayerPosition.x += playerSpeed;
-        
+
         // Limitamos la posición del jugador dentro de la ventana
         if (newPlayerPosition.x < 0)
             newPlayerPosition.x = 0;
@@ -66,34 +93,18 @@ int main() {
         if (newPlayerPosition.y > window.getSize().y - shape.getRadius() * 2)
             newPlayerPosition.y = window.getSize().y - shape.getRadius() * 2;
 
-        // Actualizamos la posición del enemigo persiguiendo al jugador
-        enemy.update(newPlayerPosition);
-
-        // Obtener la celda actual y la nueva celda del mapa
-        int currentCellX = static_cast<int>(playerPosition.x + shape.getRadius()) / cellSize;
-        int currentCellY = static_cast<int>(playerPosition.y + shape.getRadius()) / cellSize;
-        int newCellX = static_cast<int>(newPlayerPosition.x + shape.getRadius()) / cellSize;
-        int newCellY = static_cast<int>(newPlayerPosition.y + shape.getRadius()) / cellSize;
-
-        // Comprobar colisiones con el mapa
-        if (worldMap[newCellY][newCellX] == 5) {
-            // El jugador llega a la celda roja (gana el juego)
-            shape.setFillColor(Color::Green); // Cambia el color para indicar victoria
-        } else if (worldMap[newCellY][newCellX] != 0) {
-            // Si el jugador intenta moverse a una celda no permitida, no actualiza su posición
+        // Comprobamos colisiones con las paredes para el jugador
+        int playerCellX = static_cast<int>(newPlayerPosition.x + shape.getRadius()) / cellSize;
+        int playerCellY = static_cast<int>(newPlayerPosition.y + shape.getRadius()) / cellSize;
+        if (worldMap[playerCellY][playerCellX] != 0) {
+            // Si el jugador intenta moverse a una celda no permitida, no actualizamos su posición
             newPlayerPosition = playerPosition;
         }
 
-
-
-        // Comprobamos si el jugador está lo suficientemente cerca del enemigo para hacer daño
-        float distance = sqrt(pow(playerPosition.x - enemy.getPosition().x, 2) + pow(playerPosition.y - enemy.getPosition().y, 2));
-        if (distance < 20) {
-            // Aquí puedes agregar la lógica para hacer daño al enemigo
-            // Por ejemplo, restar vida al enemigo o eliminarlo
-        }
-
         playerPosition = newPlayerPosition;
+
+        // Actualizamos la posición del enemigo persiguiendo al jugador
+        enemy.update(playerPosition);
 
         window.clear();
 
@@ -118,7 +129,7 @@ int main() {
                     case 5:
                         cell.setFillColor(Color::Yellow); // Premio
                         break;
-                         case 6:
+                    case 6:
                         cell.setFillColor(Color::Cyan); // Premio
                         break;
                     default:
@@ -133,10 +144,7 @@ int main() {
         shape.setPosition(playerPosition);
         window.draw(shape);
 
-        CircleShape enemyShape(5.f);
-        enemyShape.setFillColor(Color::Red);
-        enemyShape.setPosition(enemy.getPosition());
-        window.draw(enemyShape);
+        enemy.draw(window);
 
         window.display();
     }
