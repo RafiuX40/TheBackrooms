@@ -5,13 +5,16 @@
 
 using namespace sf;
 
-class Enemy {
+class Enemy
+{
 public:
-    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(10.f), health(100) {
+    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(10.f), health(100)
+    {
         shape.setFillColor(Color::Red); // Color del enemigo
     }
 
-    void update(const Vector2f& playerPos) {
+    void update(const Vector2f &playerPos)
+    {
         // Calculamos el vector de dirección hacia el jugador
         Vector2f direction = playerPos - position;
         // Normalizamos el vector de dirección
@@ -23,7 +26,8 @@ public:
         // Comprobamos colisiones con las paredes para el enemigo
         int newCellX = static_cast<int>(newPosition.x) / cellSize;
         int newCellY = static_cast<int>(newPosition.y) / cellSize;
-        if (worldMaps[currentMapIndex][newCellY][newCellX] != 0) {
+        if (worldMaps[currentMapIndex][newCellY][newCellX] != 0)
+        {
             // Si el enemigo intenta moverse a una celda no permitida, no actualizamos su posición
             return;
         }
@@ -31,26 +35,32 @@ public:
         position = newPosition;
     }
 
-    const Vector2f& getPosition() const {
+    const Vector2f &getPosition() const
+    {
         return position;
     }
 
-    void setPosition(const Vector2f& newPosition) {
+    void setPosition(const Vector2f &newPosition)
+    {
         position = newPosition;
     }
 
-    const FloatRect getGlobalBounds() const {
+    const FloatRect getGlobalBounds() const
+    {
         return shape.getGlobalBounds();
     }
 
-    void draw(RenderWindow& window) {
+    void draw(RenderWindow &window)
+    {
         shape.setPosition(position);
         window.draw(shape);
     }
 
-    void takeDamage(int amount) {
+    void takeDamage(int amount)
+    {
         health -= amount;
-        if (health <= 0) {
+        if (health <= 0)
+        {
             // Si la salud del enemigo llega a cero o menos, lo eliminamos
             position = Vector2f(-1000.f, -1000.f); // Movemos al enemigo fuera de la pantalla
         }
