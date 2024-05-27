@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <cstdlib> // Para generar números aleatorios
 
 using namespace sf;
 
@@ -10,7 +11,7 @@ int cellSize = 25; // Declaración de cellSizes
 
 int main()
 {
-    RenderWindow window(VideoMode(800, 600), "SFML works!");
+    RenderWindow window(VideoMode(screenWidth, screenHeight), "SFML works!");
     window.setFramerateLimit(50);
     CircleShape shape(5.f);
     shape.setFillColor(Color::Blue);
@@ -41,12 +42,31 @@ int main()
 
         // Limitamos la posición del jugador dentro de la ventana
         if (newPlayerPosition.x < 0 || newPlayerPosition.x > screenWidth ||
-            newPlayerPosition.y < 0 || newPlayerPosition.y > screenHeight)
+            newPlayerPosition.y <= -cellSize || newPlayerPosition.y > screenHeight)
         {
-            // Si el jugador llega a una de las orillas de la ventana, cambiamos el mapa
-            currentMapIndex = (currentMapIndex + 1) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
-            // Posicionamos al jugador en una posición inicial en el nuevo mapa
-            newPlayerPosition = Vector2f(100.f, 100.f);
+            // Determinamos qué orilla ha alcanzado el jugador y ajustamos la posición del jugador
+            if (newPlayerPosition.x < 0) { // Límite izquierdo
+                currentMapIndex = (currentMapIndex + 3) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
+                newPlayerPosition.x = screenWidth - 1; // Aparecer en el lado contrario
+            }
+            else if (newPlayerPosition.x > screenWidth) { // Límite derecho
+                currentMapIndex = (currentMapIndex + 1) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
+                newPlayerPosition.x = 0; // Aparecer en el lado contrario
+            }
+            else if (newPlayerPosition.y <= -cellSize) { // Límite superior
+                currentMapIndex = (currentMapIndex + 2) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
+                newPlayerPosition.y = screenHeight - 1; // Aparecer en el lado contrario
+            }
+            else if (newPlayerPosition.y > screenHeight) { // Límite inferior
+                currentMapIndex = (currentMapIndex + 4) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
+                newPlayerPosition.y = 0; // Aparecer en el lado contrario
+            }
+            
+            // Generamos una posición aleatoria para el enemigo dentro del nuevo mapa
+            srand(time(NULL)); // Inicializamos la semilla del generador de números aleatorios
+            int randomX = rand() % screenWidth;
+            int randomY = rand() % screenHeight;
+            enemy.setPosition(Vector2f(randomX, randomY));
         }
 
         // Comprobamos colisiones con las paredes para el jugador
