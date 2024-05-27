@@ -8,7 +8,7 @@ using namespace sf;
 class Enemy
 {
 public:
-    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(10.f), health(100)
+    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(5.f), health(100)
     {
         shape.setFillColor(Color::Red); // Color del enemigo
     }

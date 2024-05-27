@@ -11,14 +11,28 @@ int cellSize = 25; // Declaración de cellSizes
 
 int main()
 {
-    RenderWindow window(VideoMode(screenWidth, screenHeight), "SFML works!");
-    window.setFramerateLimit(50);
-    CircleShape shape(5.f);
-    shape.setFillColor(Color::Blue);
+    RenderWindow window(VideoMode(screenWidth, screenHeight), "RPG");
+    window.setFramerateLimit(60);
+
+    auto image = sf::Image{};
+    if (!image.loadFromFile("Assets/pixil-frame-0.png"))
+    {
+    // Error handling...
+    }
+
+    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+
+
+    Texture textura;
+    textura.loadFromFile("Assets/pixil-frame-0.png");
+
+    Sprite sprite;
+    sprite.setTexture(textura);
+
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 5.0f;
 
-    Enemy enemy(Vector2f(500.f, 500.f), 3.0f); // Creamos un enemigo en una posición y velocidad específicas
+    Enemy enemy(Vector2f(500.f, 500.f), 4.0f); // Creamos un enemigo en una posición y velocidad específicas
 
     while (window.isOpen())
     {
@@ -69,16 +83,30 @@ int main()
             enemy.setPosition(Vector2f(randomX, randomY));
         }
 
+        
+
         // Comprobamos colisiones con las paredes para el jugador
         int playerCellX = static_cast<int>(newPlayerPosition.x) / cellSize;
         int playerCellY = static_cast<int>(newPlayerPosition.y) / cellSize;
-        if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 5)
         {
             // Si el jugador intenta moverse a una celda no permitida, no actualizamos su posición
+            sprite.setColor(Color::Red);
+            
+
+        }
+
+        else if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
+        {
+            
             newPlayerPosition = playerPosition;
         }
 
         playerPosition = newPlayerPosition;
+
+
+        
+        
 
         // Actualizamos la posición del enemigo persiguiendo al jugador
         enemy.update(playerPosition);
@@ -121,8 +149,8 @@ int main()
         }
 
         // Dibujamos al jugador y al enemigo
-        shape.setPosition(playerPosition);
-        window.draw(shape);
+        sprite.setPosition(playerPosition);
+        window.draw(sprite);
         enemy.draw(window);
         window.display();
     }
