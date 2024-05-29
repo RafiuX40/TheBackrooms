@@ -25,7 +25,7 @@ int main()
 
     Sprite sprite;
     sprite.setTexture(textura);
-    sprite.setOrigin(16,16);
+    sprite.setOrigin(16,13);
 
     Texture background;
     background.loadFromFile("Assets/pixilart-drawing.png");
