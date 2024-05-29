@@ -28,6 +28,7 @@ int main()
 
     Sprite sprite;
     sprite.setTexture(textura);
+    sprite.setOrigin(16,16);
 
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 5.0f;
