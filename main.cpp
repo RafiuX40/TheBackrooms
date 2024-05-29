@@ -149,6 +149,8 @@ int main()
         window.clear();
         // Dibujamos el mapa
         
+        window.draw(fondo);
+
         for (int i = 0; i < mapHeight; ++i)
         {
             
@@ -160,7 +162,7 @@ int main()
                 switch (worldMaps[currentMapIndex][i][j])
                 {
                 case 1:
-                    cell.setFillColor(Color::White); // Pared
+                    cell.setFillColor(Color(166,145,63)); // Pared
                     break;
                 case 2:
                     cell.setFillColor(Color::Blue); // Otro tipo de celda
@@ -178,7 +180,7 @@ int main()
                     cell.setFillColor(Color::Cyan); // Premio
                     break;
                 default:
-                    cell.setFillColor(Color::Black); // Espacio vacío
+                    cell.setFillColor(Color(0,0,0,0)); // Espacio vacío
                     break;
                 }
                 
@@ -189,7 +191,6 @@ int main()
         // Dibujamos al jugador y al enemigo
         
         sprite.setPosition(playerPosition);
-        window.draw(fondo);
         window.draw(sprite);
         enemy.draw(window);
         window.display();
