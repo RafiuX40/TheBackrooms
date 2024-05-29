@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
-#include <cstdlib> // Para generar números aleatorios
 
 using namespace sf;
 
@@ -11,28 +10,14 @@ int cellSize = 25; // Declaración de cellSizes
 
 int main()
 {
-    RenderWindow window(VideoMode(screenWidth, screenHeight), "RPG");
-    window.setFramerateLimit(60);
-
-    auto image = sf::Image{};
-    if (!image.loadFromFile("Assets/pixil-frame-0.png"))
-    {
-    // Error handling...
-    }
-
-    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
-
-
-    Texture textura;
-    textura.loadFromFile("Assets/pixil-frame-0.png");
-
-    Sprite sprite;
-    sprite.setTexture(textura);
-
+    RenderWindow window(VideoMode(800, 600), "SFML works!");
+    window.setFramerateLimit(50);
+    CircleShape shape(5.f);
+    shape.setFillColor(Color::Blue);
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 5.0f;
 
-    Enemy enemy(Vector2f(500.f, 500.f), 4.0f); // Creamos un enemigo en una posición y velocidad específicas
+    Enemy enemy(Vector2f(500.f, 500.f), 5.0f); // Creamos un enemigo en una posición y velocidad específicas
 
     while (window.isOpen())
     {
@@ -56,57 +41,24 @@ int main()
 
         // Limitamos la posición del jugador dentro de la ventana
         if (newPlayerPosition.x < 0 || newPlayerPosition.x > screenWidth ||
-            newPlayerPosition.y <= -cellSize || newPlayerPosition.y > screenHeight)
+            newPlayerPosition.y < 0 || newPlayerPosition.y > screenHeight)
         {
-            // Determinamos qué orilla ha alcanzado el jugador y ajustamos la posición del jugador
-            if (newPlayerPosition.x < 0) { // Límite izquierdo
-                currentMapIndex = (currentMapIndex + 3) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
-                newPlayerPosition.x = screenWidth - 1; // Aparecer en el lado contrario
-            }
-            else if (newPlayerPosition.x > screenWidth) { // Límite derecho
-                currentMapIndex = (currentMapIndex + 1) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
-                newPlayerPosition.x = 0; // Aparecer en el lado contrario
-            }
-            else if (newPlayerPosition.y <= -cellSize) { // Límite superior
-                currentMapIndex = (currentMapIndex + 2) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
-                newPlayerPosition.y = screenHeight - 1; // Aparecer en el lado contrario
-            }
-            else if (newPlayerPosition.y > screenHeight) { // Límite inferior
-                currentMapIndex = (currentMapIndex + 4) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
-                newPlayerPosition.y = 0; // Aparecer en el lado contrario
-            }
-            
-            // Generamos una posición aleatoria para el enemigo dentro del nuevo mapa
-            srand(time(NULL)); // Inicializamos la semilla del generador de números aleatorios
-            int randomX = rand() % screenWidth;
-            int randomY = rand() % screenHeight;
-            enemy.setPosition(Vector2f(randomX, randomY));
+            // Si el jugador llega a una de las orillas de la ventana, cambiamos el mapa
+            currentMapIndex = (currentMapIndex + 1) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
+            // Posicionamos al jugador en una posición inicial en el nuevo mapa
+            newPlayerPosition = Vector2f(100.f, 100.f);
         }
-
-        
 
         // Comprobamos colisiones con las paredes para el jugador
         int playerCellX = static_cast<int>(newPlayerPosition.x) / cellSize;
         int playerCellY = static_cast<int>(newPlayerPosition.y) / cellSize;
-        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 5)
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0 && worldMaps[currentMapIndex][playerCellY][playerCellX] != 3)
         {
             // Si el jugador intenta moverse a una celda no permitida, no actualizamos su posición
-            sprite.setColor(Color::Red);
-            
-
-        }
-
-        else if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
-        {
-            
             newPlayerPosition = playerPosition;
         }
 
         playerPosition = newPlayerPosition;
-
-
-        
-        
 
         // Actualizamos la posición del enemigo persiguiendo al jugador
         enemy.update(playerPosition);
@@ -125,20 +77,8 @@ int main()
                 case 1:
                     cell.setFillColor(Color::White); // Pared
                     break;
-                case 2:
-                    cell.setFillColor(Color::Blue); // Otro tipo de celda
-                    break;
-                case 3:
-                    cell.setFillColor(Color::Yellow); // Otro tipo de celda
-                    break;
-                case 4:
-                    cell.setFillColor(Color::Red); // Celda peligrosa
-                    break;
-                case 5:
-                    cell.setFillColor(Color::Yellow); // Premio
-                    break;
-                case 6:
-                    cell.setFillColor(Color::Cyan); // Premio
+                    case 3:
+                    cell.setFillColor(Color::Red);  // da fuerza al player
                     break;
                 default:
                     cell.setFillColor(Color::Black); // Espacio vacío
@@ -149,8 +89,8 @@ int main()
         }
 
         // Dibujamos al jugador y al enemigo
-        sprite.setPosition(playerPosition);
-        window.draw(sprite);
+        shape.setPosition(playerPosition);
+        window.draw(shape);
         enemy.draw(window);
         window.display();
     }
