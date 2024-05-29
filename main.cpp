@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <cstdlib> // Para generar números aleatorios
+using namespace std;
 using namespace sf;
 int cellSize = 25; // Declaración de cellSizes
 #include "Cabeceras/map.hpp"
@@ -12,7 +13,7 @@ int main()
     window.setFramerateLimit(60);
 
     auto image = sf::Image{};
-    if (!image.loadFromFile("Assets/pixil-frame-0.png"))
+    if (!image.loadFromFile("Assets/Player-stop"))
     {
     // Error handling...
     }
@@ -21,7 +22,18 @@ int main()
 
 
     Texture textura;
-    textura.loadFromFile("Assets/pixil-frame-0.png");
+    textura.loadFromFile("Assets/Player-stop.png");
+
+    Texture walkTexture1;
+    walkTexture1.loadFromFile("Assets/Walk-1.png");
+
+    Texture walkTexture2;
+    walkTexture2.loadFromFile("Assets/Walk-2.png");
+
+    vector<Texture> playerWalkTextures = {walkTexture1, textura, walkTexture2}; // Vector de texturas de la animación
+
+    int currentWalkFrame = 0; // Índice de la textura actual de la animación
+    bool isWalking = false; // Estado de la animación
 
     Sprite sprite;
     sprite.setTexture(textura);
@@ -57,6 +69,25 @@ int main()
             newPlayerPosition.x -= playerSpeed;
         if (Keyboard::isKeyPressed(Keyboard::D))
             newPlayerPosition.x += playerSpeed;
+
+        if (Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::S) ||
+            Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D)) {
+            isWalking = true; // El jugador está caminando si alguna tecla de movimiento está presionada
+        } else {
+            isWalking = false; // El jugador no está caminando si ninguna tecla de movimiento está presionada
+        }
+
+        if (isWalking) {
+            // Cambiar la textura del jugador para simular la animación de caminar
+            sprite.setTexture(playerWalkTextures[currentWalkFrame]);
+            // Incrementar el índice del frame de la animación
+            currentWalkFrame = (currentWalkFrame + 1) % playerWalkTextures.size();
+        } else {
+            // El jugador no está caminando, usar la textura estática
+            sprite.setTexture(textura);
+        }   
+
+
         // Limitamos la posición del jugador dentro de la ventana
         if (newPlayerPosition.x < 0 || newPlayerPosition.x > screenWidth ||
             newPlayerPosition.y <= -cellSize || newPlayerPosition.y > screenHeight)
@@ -117,7 +148,7 @@ int main()
 
         window.clear();
         // Dibujamos el mapa
-        window.draw(fondo);
+        
         for (int i = 0; i < mapHeight; ++i)
         {
             
@@ -158,6 +189,7 @@ int main()
         // Dibujamos al jugador y al enemigo
         
         sprite.setPosition(playerPosition);
+        window.draw(fondo);
         window.draw(sprite);
         enemy.draw(window);
         window.display();
