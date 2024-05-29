@@ -13,7 +13,7 @@ int main()
     window.setFramerateLimit(60);
 
     auto image = sf::Image{};
-    if (!image.loadFromFile("Assets/Player-stop"))
+    if (!image.loadFromFile("Assets/Player-stop.png"))
     {
     // Error handling...
     }
