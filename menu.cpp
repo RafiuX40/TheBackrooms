@@ -17,7 +17,7 @@ Menu::Menu(float w, float h)
 
     menu[1].setFont(font);
     menu[1].setFillColor(Color::White);
-    menu[1].setString("OPTIONS");
+    menu[1].setString("CREDITS");
     menu[1].setPosition(Vector2f(w/2-50, h / (MAX_NUMBER_OF_ITEMS + 1) * 2));
 
     menu[2].setFont(font);
