@@ -5,7 +5,7 @@ using namespace sf;
 
 Menu::Menu(float w, float h)
 {
-    if (!font.loadFromFile("Asstes/Super Nornaml.ttf"))
+    if (!font.loadFromFile("Assets/Super Normal.ttf"))
     {
         // handle error
     }

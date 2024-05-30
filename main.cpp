@@ -6,18 +6,18 @@ int main()
     RenderWindow window(VideoMode(screenWidth, screenHeight), "The Backrooms");
 
     auto image = sf::Image{};
-    if (!image.loadFromFile("Asstes/Logo.png"))
+    if (!image.loadFromFile("Assets/Logo.png"))
     {
-    // Error handling...
+        // Error handling...
     }
 
+    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+
     Texture background;
-    background.loadFromFile("Asstes/Background.jfif");
+    background.loadFromFile("Assets/Background.jfif");
 
     Sprite BackMenu;
     BackMenu.setTexture(background);
-
-    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
     Menu menu(window.getSize().x, window.getSize().y);
 
