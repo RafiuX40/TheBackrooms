@@ -3,6 +3,14 @@
 
 int main()
 {
+
+    Font font;
+    font.loadFromFile("Assets/Super Normal.ttf");
+    Text title("THE BACKROOMS", font, 75);
+    title.setFillColor(Color::Black);
+    title.setPosition(25, 15);
+
+
     RenderWindow window(VideoMode(screenWidth, screenHeight), "The Backrooms");
 
     auto image = sf::Image{};
@@ -66,6 +74,7 @@ int main()
 
         window.clear();
         window.draw(BackMenu);
+        window.draw(title);
         menu.draw(window);
         window.display();
     }
