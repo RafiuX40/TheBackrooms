@@ -8,9 +8,9 @@ using namespace sf;
 class Enemy
 {
 public:
-    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), shape(5.f), health(100)
+    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), health(100)
     {
-        shape.setFillColor(Color::Red); // Color del enemigo
+        enemy.setOrigin(16,13);
     }
 
     void update(const Vector2f &playerPos)
@@ -47,13 +47,16 @@ public:
 
     const FloatRect getGlobalBounds() const
     {
-        return shape.getGlobalBounds();
+        return enemy.getGlobalBounds();
     }
 
     void draw(RenderWindow &window)
     {
-        shape.setPosition(position);
-        window.draw(shape);
+        Texture enemyT;
+        enemyT.loadFromFile("Assets/Skinsteler.png");
+        enemy.setPosition(position);
+        enemy.setTexture(enemyT);
+        window.draw(enemy);
     }
 
     void takeDamage(int amount)
@@ -69,7 +72,7 @@ public:
 private:
     Vector2f position;
     float speed;
-    CircleShape shape; // Forma del enemigo
+    Sprite enemy; // Forma del enemigo
     int health;
 };
 
