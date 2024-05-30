@@ -12,16 +12,22 @@ Menu::Menu(float w, float h)
 
     menu[0].setFont(font);
     menu[0].setFillColor(Color::Red);
+    menu[0].setOutlineColor(Color::Black);
+    menu[0].setOutlineThickness(5);
     menu[0].setString("PLAY");
     menu[0].setPosition(Vector2f(w/2-50, h / (MAX_NUMBER_OF_ITEMS + 1) * 1));
 
     menu[1].setFont(font);
     menu[1].setFillColor(Color::White);
+    menu[1].setOutlineColor(Color::Black);
+    menu[1].setOutlineThickness(5);
     menu[1].setString("CREDITS");
     menu[1].setPosition(Vector2f(w/2-50, h / (MAX_NUMBER_OF_ITEMS + 1) * 2));
 
     menu[2].setFont(font);
     menu[2].setFillColor(Color::White);
+    menu[2].setOutlineColor(Color::Black);
+    menu[2].setOutlineThickness(5);
     menu[2].setString("EXIT");
     menu[2].setPosition(Vector2f(w/2-50, h / (MAX_NUMBER_OF_ITEMS + 1) * 3));
 

@@ -7,7 +7,9 @@ int main()
     Font font;
     font.loadFromFile("Assets/Super Normal.ttf");
     Text title("THE BACKROOMS", font, 75);
-    title.setFillColor(Color::Black);
+    title.setFillColor(Color::White);
+    title.setOutlineColor(Color::Black);
+    title.setOutlineThickness(5);
     title.setPosition(25, 15);
 
 
