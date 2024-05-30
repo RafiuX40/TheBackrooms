@@ -18,6 +18,7 @@ int main()
 
     Sprite BackMenu;
     BackMenu.setTexture(background);
+    BackMenu.setScale(float(screenWidth) / background.getSize().x, float(screenHeight) / background.getSize().y);
 
     Menu menu(window.getSize().x, window.getSize().y);
 
