@@ -15,7 +15,7 @@ int main()
 
     RenderWindow window(VideoMode(screenWidth, screenHeight), "The Backrooms");
 
-    auto image = sf::Image{};
+    auto image = Image{};
     if (!image.loadFromFile("Assets/Logo.png"))
     {
         // Error handling...
