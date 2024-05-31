@@ -1,5 +1,6 @@
 #include "Cabeceras/Game.hpp"
 #include "Cabeceras/menu.hpp"
+#include "Cabeceras/Creditos.hpp"
 
 int main()
 {
@@ -58,7 +59,7 @@ int main()
                         Game();
                         break;
                     case 1:
-                        
+                        Creditos();
                         break;
                     case 2:
                         window.close();
