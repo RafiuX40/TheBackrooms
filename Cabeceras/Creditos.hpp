@@ -7,6 +7,9 @@ using namespace sf;
 
 void Creditos()
 {
+
+    
+
     Font font;
     font.loadFromFile("Assets/Super Normal.ttf");
     
@@ -20,30 +23,52 @@ void Creditos()
     creditos.setFillColor(Color::White);
     creditos.setOutlineColor(Color::Black);
     creditos.setOutlineThickness(5);
-    creditos.setPosition(25, 55);
+    creditos.setPosition(200, 105);
 
     Text name1("Hecho por:", font, 25);
     name1.setFillColor(Color::White);
     name1.setOutlineColor(Color::Black);
     name1.setOutlineThickness(5);
-    name1.setPosition(25, 105);
+    name1.setPosition(230, 165);
 
     Text name2("Rafael de Jesus Ramos Chavez", font, 25);
     name2.setFillColor(Color::White);
     name2.setOutlineColor(Color::Black);
     name2.setOutlineThickness(5);
-    name2.setPosition(25, 125);
+    name2.setPosition(120, 205);
 
     Text name3("Diego Enrique Garcia Alpizar", font, 25);
     name3.setFillColor(Color::White);
     name3.setOutlineColor(Color::Black);
     name3.setOutlineThickness(5);
-    name3.setPosition(25, 15);
+    name3.setPosition(125, 255);
+
+    Text name4("Basado en:", font, 25);
+    name4.setFillColor(Color::White);
+    name4.setOutlineColor(Color::Black);
+    name4.setOutlineThickness(5);
+    name4.setPosition(230, 300);
+
+    Text name5("The Backrooms por Kane Pixels", font, 25);
+    name5.setFillColor(Color::White);
+    name5.setOutlineColor(Color::Black);
+    name5.setOutlineThickness(5);
+    name5.setPosition(110, 330);
 
     RenderWindow window(VideoMode(600, 600), "Creditos");
     
     while (window.isOpen())
     {
+
+
+        auto image = Image{};
+    if (!image.loadFromFile("Assets/Logo.png"))
+    {
+        // Error handling...
+    }
+
+    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+
         Event event;
         while (window.pollEvent(event))
         {
@@ -57,6 +82,8 @@ void Creditos()
         window.draw(name1);
         window.draw(name2);
         window.draw(name3);
+        window.draw(name4);
+        window.draw(name5);
         window.display();
     }
 
