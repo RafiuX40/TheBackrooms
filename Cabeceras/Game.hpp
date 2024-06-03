@@ -49,6 +49,7 @@ void Game()
 
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 3.0f;
+    float playerHealth = 100.0f;
 
     Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
     Enemy enemy2(Vector2f(500.f, 500.f), 2.5f);
@@ -76,12 +77,12 @@ void Game()
         if (Keyboard::isKeyPressed(Keyboard::D))
             newPlayerPosition.x += playerSpeed;
 
-        if(Mouse::isButtonPressed(Mouse::Left) && c.getElapsedTime().asSeconds() > 0.5 )
+        if (Mouse::isButtonPressed(Mouse::Left) && c.getElapsedTime().asSeconds() > 0.5)
         {
             bullets.push_back(CircleShape());
             bullets.back().setRadius(5);
             bullets.back().setPosition(sprite.getPosition());
-            angles.push_back(atan2(Mouse::getPosition(window).y - sprite.getPosition().y , Mouse::getPosition(window).x - sprite.getPosition().x));
+            angles.push_back(atan2(Mouse::getPosition(window).y - sprite.getPosition().y, Mouse::getPosition(window).x - sprite.getPosition().x));
             c.restart();
         }
 
@@ -134,13 +135,16 @@ void Game()
                 newPlayerPosition.y = 0; // Aparecer en el lado contrario
             }
 
+            
+
             // Generamos una posición aleatoria para el enemigo dentro del nuevo mapa
             srand(time(NULL)); // Inicializamos la semilla del generador de números aleatorios
             int randomX = rand() % screenWidth;
             int randomX2;
-            do{
+            do
+            {
                 randomX2 = rand() % screenWidth;
-            }while(randomX2 == randomX);
+            } while (randomX2 == randomX);
 
             int randomY = rand() % screenHeight;
             int randomY2;
@@ -149,9 +153,6 @@ void Game()
             {
                 randomY2 = rand() % screenHeight;
             } while (randomY2 == randomY);
-            
-
-            
 
             enemy.setPosition(Vector2f(randomX, randomY));
             enemy2.setPosition(Vector2f(randomX2, randomY2));
@@ -225,35 +226,65 @@ void Game()
 
         sprite.setPosition(playerPosition);
         window.draw(sprite);
-        for(int i = 0; i < bullets.size(); i++) {
-    window.draw(bullets[i]);
-    bullets[i].move(5*cos(angles[i]), 5*sin(angles[i]));
+        for (int i = 0; i < bullets.size(); i++)
+        {
+            window.draw(bullets[i]);
+            bullets[i].move(5 * cos(angles[i]), 5 * sin(angles[i]));
 
-    // Verificar colisiones con enemigos
-    for (int i = 0; i < bullets.size(); i++) {
-        if (bullets[i].getGlobalBounds().intersects(enemy.getGlobalBounds())) {
-            // Reducir la vida del enemigo
-            enemy.reduceHealth(10); // Por ejemplo, reduce la vida en 10 puntos
-            // Eliminar el proyectil
-            bullets.erase(bullets.begin() + i);
-            angles.erase(angles.begin() + i);
-            // Decrementar i para evitar errores al modificar el vector dentro del bucle
-            i--;
-            break; // Salir del bucle, ya que el proyectil solo puede golpear al enemigo una vez
+            // Verificar colisiones con enemigos
+            for (int i = 0; i < bullets.size(); i++)
+            {
+                if (bullets[i].getGlobalBounds().intersects(enemy.getGlobalBounds()))
+                {
+                    // Reducir la vida del enemigo
+                    enemy.reduceHealth(10); // Por ejemplo, reduce la vida en 10 puntos
+                    // Eliminar el proyectil
+                    bullets.erase(bullets.begin() + i);
+                    angles.erase(angles.begin() + i);
+                    // Decrementar i para evitar errores al modificar el vector dentro del bucle
+                    i--;
+                    break; // Salir del bucle, ya que el proyectil solo puede golpear al enemigo una vez
+                }
+            }
+            for (int i = 0; i < bullets.size(); i++)
+            {
+                if (bullets[i].getGlobalBounds().intersects(enemy2.getGlobalBounds()))
+                {
+                    // Reducir la vida del enemigo
+                    enemy2.reduceHealth(10); // Por ejemplo, reduce la vida en 10 puntos
+                    // Eliminar el proyectil
+                    bullets.erase(bullets.begin() + i);
+                    angles.erase(angles.begin() + i);
+                    // Decrementar i para evitar errores al modificar el vector dentro del bucle
+                    i--;
+                    break; // Salir del bucle, ya que el proyectil solo puede golpear al enemigo una vez
+                }
+            }
         }
-    }for (int i = 0; i < bullets.size(); i++) {
-        if (bullets[i].getGlobalBounds().intersects(enemy2.getGlobalBounds())) {
-            // Reducir la vida del enemigo
-            enemy2.reduceHealth(10); // Por ejemplo, reduce la vida en 10 puntos
-            // Eliminar el proyectil
-            bullets.erase(bullets.begin() + i);
-            angles.erase(angles.begin() + i);
-            // Decrementar i para evitar errores al modificar el vector dentro del bucle
-            i--;
-            break; // Salir del bucle, ya que el proyectil solo puede golpear al enemigo una vez
-        }
-    }
-}
+
+
+        if (sprite.getGlobalBounds().intersects(enemy.getGlobalBounds()))
+            {
+                // Reducir la salud del jugador si hay colisión con enemy
+                playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
+                if (playerHealth <= 0)
+                {
+                    // El jugador ha perdido, puedes hacer lo que necesites aquí
+                    window.close(); // Por ejemplo, cerrar la ventana del juego
+                }
+
+                if (sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
+                {
+                    // Reducir la salud del jugador si hay colisión con enemy2
+                    playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
+                    if (playerHealth <= 0)
+                    {
+                        // El jugador ha perdido, puedes hacer lo que necesites aquí
+                        window.close(); // Por ejemplo, cerrar la ventana del juego
+                    }
+                }
+            }
+
         enemy.draw(window);
         enemy2.draw(window);
         window.display();
