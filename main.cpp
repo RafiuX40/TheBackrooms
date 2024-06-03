@@ -33,7 +33,7 @@ int main()
 
     Menu menu(window.getSize().x, window.getSize().y);
 
-    while (window.isOpen())
+    while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::Escape))
     {
         Event event;
 

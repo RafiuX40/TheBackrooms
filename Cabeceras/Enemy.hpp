@@ -8,7 +8,7 @@ using namespace sf;
 class Enemy
 {
 public:
-    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), health(100)
+    Enemy(Vector2f startPos, float spd) : position(startPos), speed(spd), health(50)
     {
         enemy.setOrigin(16,13);
     }
@@ -59,13 +59,10 @@ public:
         window.draw(enemy);
     }
 
-    void takeDamage(int amount)
-    {
+    void reduceHealth(float amount) {
         health -= amount;
-        if (health <= 0)
-        {
-            // Si la salud del enemigo llega a cero o menos, lo eliminamos
-            position = Vector2f(-1000.f, -1000.f); // Movemos al enemigo fuera de la pantalla
+        if (health <= 0) {
+            position = Vector2f(-1000.f, -1000.f);
         }
     }
 

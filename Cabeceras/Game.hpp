@@ -48,12 +48,16 @@ void Game()
     fondo.setTexture(background);
 
     Vector2f playerPosition(100.f, 100.f);
-    float playerSpeed = 5.0f;
+    float playerSpeed = 3.0f;
 
-    Enemy enemy(Vector2f(500.f, 500.f), 3.0f); // Creamos un enemigo en una posición y velocidad específicas
-    Enemy enemy2(Vector2f(500.f, 500.f), 3.0f);
+    Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
+    Enemy enemy2(Vector2f(500.f, 500.f), 2.5f);
 
-    while (window.isOpen())
+    vector<CircleShape> bullets;
+    vector<float> angles;
+    Clock c;
+
+    while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::Escape))
     {
         Event event;
         while (window.pollEvent(event))
@@ -71,6 +75,15 @@ void Game()
             newPlayerPosition.x -= playerSpeed;
         if (Keyboard::isKeyPressed(Keyboard::D))
             newPlayerPosition.x += playerSpeed;
+
+        if(Mouse::isButtonPressed(Mouse::Left) && c.getElapsedTime().asSeconds() > 0.5 )
+        {
+            bullets.push_back(CircleShape());
+            bullets.back().setRadius(5);
+            bullets.back().setPosition(sprite.getPosition());
+            angles.push_back(atan2(Mouse::getPosition(window).y - sprite.getPosition().y , Mouse::getPosition(window).x - sprite.getPosition().x));
+            c.restart();
+        }
 
         if (Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::S) ||
             Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
@@ -212,6 +225,35 @@ void Game()
 
         sprite.setPosition(playerPosition);
         window.draw(sprite);
+        for(int i = 0; i < bullets.size(); i++) {
+    window.draw(bullets[i]);
+    bullets[i].move(5*cos(angles[i]), 5*sin(angles[i]));
+
+    // Verificar colisiones con enemigos
+    for (int i = 0; i < bullets.size(); i++) {
+        if (bullets[i].getGlobalBounds().intersects(enemy.getGlobalBounds())) {
+            // Reducir la vida del enemigo
+            enemy.reduceHealth(10); // Por ejemplo, reduce la vida en 10 puntos
+            // Eliminar el proyectil
+            bullets.erase(bullets.begin() + i);
+            angles.erase(angles.begin() + i);
+            // Decrementar i para evitar errores al modificar el vector dentro del bucle
+            i--;
+            break; // Salir del bucle, ya que el proyectil solo puede golpear al enemigo una vez
+        }
+    }for (int i = 0; i < bullets.size(); i++) {
+        if (bullets[i].getGlobalBounds().intersects(enemy2.getGlobalBounds())) {
+            // Reducir la vida del enemigo
+            enemy2.reduceHealth(10); // Por ejemplo, reduce la vida en 10 puntos
+            // Eliminar el proyectil
+            bullets.erase(bullets.begin() + i);
+            angles.erase(angles.begin() + i);
+            // Decrementar i para evitar errores al modificar el vector dentro del bucle
+            i--;
+            break; // Salir del bucle, ya que el proyectil solo puede golpear al enemigo una vez
+        }
+    }
+}
         enemy.draw(window);
         enemy2.draw(window);
         window.display();
