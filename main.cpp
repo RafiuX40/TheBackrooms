@@ -3,12 +3,13 @@
 #include "Cabeceras/Game.hpp"
 #include "Cabeceras/menu.hpp"
 #include "Cabeceras/Creditos.hpp"
+#include "Cabeceras/Info.hpp"
 
 int main()
 {
 
     SoundBuffer buffer;
-    if (!buffer.loadFromFile("Assets/Government-Funding.wav"))
+    if (!buffer.loadFromFile("Assets/Audios/Government-Funding.wav"))
     {
         // Error handling...
     }
@@ -74,7 +75,8 @@ int main()
                         Creditos();
                         break;
                     case 2:
-                        //Informacion del juego
+                        info();
+                        break;
                     case 3:
                     window.close();
 

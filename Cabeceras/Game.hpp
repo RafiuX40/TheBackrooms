@@ -14,7 +14,7 @@ void Game()
 {
     
     SoundBuffer buffer;
-    if (!buffer.loadFromFile("Assets/The-Complex.wav"))
+    if (!buffer.loadFromFile("Assets/Audios/The-Complex.wav"))
     {
         // Error handling...
     }
@@ -23,7 +23,7 @@ void Game()
     sound.play();
 
     SoundBuffer shot;
-    if (!shot.loadFromFile("Assets/Shot.wav"))
+    if (!shot.loadFromFile("Assets/Audios/Shot.wav"))
     {
         // Error handling...
     }
@@ -43,13 +43,13 @@ void Game()
     window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
     Texture textura;
-    textura.loadFromFile("Assets/Player-stop.png");
+    textura.loadFromFile("Assets/Player/Player-stop.png");
 
     Texture walkTexture1;
-    walkTexture1.loadFromFile("Assets/Walk-1.png");
+    walkTexture1.loadFromFile("Assets/Player/Walk-1.png");
 
     Texture walkTexture2;
-    walkTexture2.loadFromFile("Assets/Walk-2.png");
+    walkTexture2.loadFromFile("Assets/Player/Walk-2.png");
 
     vector<Texture> playerWalkTextures = {walkTexture1, walkTexture2}; // Vector de texturas de la animación
 
@@ -84,7 +84,7 @@ void Game()
     vector<float> angles;
     Clock c;
 
-    while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::Escape))
+    while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::BackSpace))
     {
         Event event;
         while (window.pollEvent(event))
