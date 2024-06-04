@@ -22,6 +22,15 @@ void Game()
     sound.setBuffer(buffer);
     sound.play();
 
+    SoundBuffer shot;
+    if (!shot.loadFromFile("Assets/Shot.wav"))
+    {
+        // Error handling...
+    }
+    Sound shoting;
+    shoting.setBuffer(shot);
+
+
     RenderWindow window(VideoMode(screenWidth, screenHeight), "The Backrooms");
     window.setFramerateLimit(60);
 
@@ -99,6 +108,7 @@ void Game()
             bullets.back().setRadius(5);
             bullets.back().setPosition(sprite.getPosition());
             angles.push_back(atan2(Mouse::getPosition(window).y - sprite.getPosition().y, Mouse::getPosition(window).x - sprite.getPosition().x));
+            shoting.play();
             c.restart();
         }
 
