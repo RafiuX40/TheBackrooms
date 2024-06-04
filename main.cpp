@@ -74,7 +74,10 @@ int main()
                         Creditos();
                         break;
                     case 2:
-                        window.close();
+                        //Informacion del juego
+                    case 3:
+                    window.close();
+
                     }
 
                     break;

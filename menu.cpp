@@ -28,8 +28,15 @@ Menu::Menu(float w, float h)
     menu[2].setFillColor(Color::White);
     menu[2].setOutlineColor(Color::Black);
     menu[2].setOutlineThickness(5);
-    menu[2].setString("EXIT");
+    menu[2].setString("ABOUT");
     menu[2].setPosition(Vector2f(w/2-50, h / (MAX_NUMBER_OF_ITEMS + 1) * 3));
+
+    menu[3].setFont(font);
+    menu[3].setFillColor(Color::White);
+    menu[3].setOutlineColor(Color::Black);
+    menu[3].setOutlineThickness(5);
+    menu[3].setString("EXIT");
+    menu[3].setPosition(Vector2f(w/2-50, h / (MAX_NUMBER_OF_ITEMS + 1) * 4));
 
     selectedItemIndex = 0;
 }

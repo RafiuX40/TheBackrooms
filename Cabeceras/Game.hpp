@@ -51,7 +51,7 @@ void Game()
     Texture walkTexture2;
     walkTexture2.loadFromFile("Assets/Walk-2.png");
 
-    vector<Texture> playerWalkTextures = {walkTexture1, textura, walkTexture2}; // Vector de texturas de la animación
+    vector<Texture> playerWalkTextures = {walkTexture1, walkTexture2}; // Vector de texturas de la animación
 
     int currentWalkFrame = 0; // Índice de la textura actual de la animación
     bool isWalking = false;   // Estado de la animación
