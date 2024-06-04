@@ -41,6 +41,12 @@ void Game()
     sprite.setTexture(textura);
     sprite.setOrigin(16, 13);
 
+    Texture arma;
+    arma.loadFromFile("Assets/pistol.png");
+
+    Sprite gun;
+    gun.setTexture(arma);
+
     Texture background;
     background.loadFromFile("Assets/pixilart-drawing.png");
 
@@ -134,8 +140,6 @@ void Game()
                 currentMapIndex = (currentMapIndex + 4) % (sizeof(worldMaps) / sizeof(worldMaps[0]));
                 newPlayerPosition.y = 0; // Aparecer en el lado contrario
             }
-
-            
 
             // Generamos una posición aleatoria para el enemigo dentro del nuevo mapa
             srand(time(NULL)); // Inicializamos la semilla del generador de números aleatorios
@@ -246,6 +250,23 @@ void Game()
                     break; // Salir del bucle, ya que el proyectil solo puede golpear al enemigo una vez
                 }
             }
+
+            for (int i = 0; i < bullets.size(); i++)
+            {
+                bullets[i].move(5 * cos(angles[i]), 5 * sin(angles[i]));
+
+                // Verificar colisiones con las paredes
+                int bulletCellX = static_cast<int>(bullets[i].getPosition().x) / cellSize;
+                int bulletCellY = static_cast<int>(bullets[i].getPosition().y) / cellSize;
+                if (worldMaps[currentMapIndex][bulletCellY][bulletCellX] != 0)
+                {
+                    // Si la bala colisiona con una pared, eliminarla
+                    bullets.erase(bullets.begin() + i);
+                    angles.erase(angles.begin() + i);
+                    i--; // Decrementar i para evitar errores al modificar el vector dentro del bucle
+                }
+            }
+
             for (int i = 0; i < bullets.size(); i++)
             {
                 if (bullets[i].getGlobalBounds().intersects(enemy2.getGlobalBounds()))
@@ -262,29 +283,58 @@ void Game()
             }
         }
 
-
         if (sprite.getGlobalBounds().intersects(enemy.getGlobalBounds()))
+        {
+            // Reducir la salud del jugador si hay colisión con enemy
+            playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
+            if (playerHealth <= 0)
             {
-                // Reducir la salud del jugador si hay colisión con enemy
+                // El jugador ha perdido, puedes hacer lo que necesites aquí
+                window.close(); // Por ejemplo, cerrar la ventana del juego
+            }
+
+            if (sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
+            {
+                // Reducir la salud del jugador si hay colisión con enemy2
                 playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
                 if (playerHealth <= 0)
                 {
                     // El jugador ha perdido, puedes hacer lo que necesites aquí
                     window.close(); // Por ejemplo, cerrar la ventana del juego
                 }
-
-                if (sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
-                {
-                    // Reducir la salud del jugador si hay colisión con enemy2
-                    playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
-                    if (playerHealth <= 0)
-                    {
-                        // El jugador ha perdido, puedes hacer lo que necesites aquí
-                        window.close(); // Por ejemplo, cerrar la ventana del juego
-                    }
-                }
             }
+        }
 
+        Vector2i mousePosition = Mouse::getPosition(window);
+
+        // Calcular el ángulo entre la posición del puntero y la posición del personaje
+        float angle = atan2(mousePosition.y - sprite.getPosition().y, mousePosition.x - sprite.getPosition().x);
+        angle = angle * 180 / 3.14159265; // Convertir el ángulo de radianes a grados
+
+        // Rotar el sprite del personaje según ese ángulo
+        gun.setRotation(angle);
+
+        // Posición relativa del arma respecto al jugador
+        float gunOffsetX = 3.0f; // Ajusta este valor para cambiar la posición horizontal del arma
+        float gunOffsetY = 3.0f; // Ajusta este valor para cambiar la posición vertical del arma
+
+        // Calculamos la posición del arma en relación con el jugador
+        float gunPositionX = playerPosition.x + gunOffsetX;
+        float gunPositionY = playerPosition.y + gunOffsetY;
+
+        // Calculamos el ángulo entre el jugador y el puntero del ratón
+        float angleToMouse = atan2(playerPosition.y - mousePosition.y, playerPosition.x - mousePosition.x);
+        angleToMouse = angleToMouse * 180 / 3.14159265; // Convertimos el ángulo de radianes a grados
+
+        // Ajustamos el ángulo para que el arma mire hacia el puntero del ratón desde el lado opuesto al jugador
+        float gunRotation = angleToMouse + 180.0f; // Sumamos 180 grados para invertir el ángulo
+
+        // Establecemos la posición y la rotación del arma
+        gun.setPosition(gunPositionX, gunPositionY);
+        gun.setRotation(gunRotation);
+
+        // Dibujamos el arma
+        window.draw(gun);
         enemy.draw(window);
         enemy2.draw(window);
         window.display();
