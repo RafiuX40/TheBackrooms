@@ -78,6 +78,7 @@ void Game()
 
     Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
     Enemy enemy2(Vector2f(500.f, 500.f), 2.5f);
+    Enemy enemy3(Vector2f(500.f, 500.f), 2.5f);
 
     vector<CircleShape> bullets;
     vector<float> angles;
@@ -180,6 +181,7 @@ void Game()
 
             enemy.setPosition(Vector2f(randomX, randomY));
             enemy2.setPosition(Vector2f(randomX2, randomY2));
+            enemy3.setPosition(Vector2f(randomX2, randomY2));
         }
 
         // Comprobamos colisiones con las paredes para el jugador
@@ -311,6 +313,7 @@ void Game()
             {
                 // El jugador ha perdido, puedes hacer lo que necesites aquí
                 window.close(); // Por ejemplo, cerrar la ventana del juego
+                currentMapIndex = 0;
             }
 
             if (sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
