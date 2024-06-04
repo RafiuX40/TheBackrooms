@@ -31,7 +31,6 @@ void Game()
     Sound shoting;
     shoting.setBuffer(shot);
 
-
     RenderWindow window(VideoMode(screenWidth, screenHeight), "The Backrooms");
     window.setFramerateLimit(60);
 
@@ -130,9 +129,8 @@ void Game()
             // Cambiar la textura del jugador para simular la animación de caminar
             sprite.setTexture(playerWalkTextures[currentWalkFrame]);
             // Incrementar el índice del frame de la animación
-            
+
             currentWalkFrame = (currentWalkFrame + 1) % playerWalkTextures.size();
-            
         }
         else
         {
@@ -191,19 +189,30 @@ void Game()
         // Comprobamos colisiones con las paredes para el jugador
         int playerCellX = static_cast<int>(newPlayerPosition.x) / cellSize;
         int playerCellY = static_cast<int>(newPlayerPosition.y) / cellSize;
+        
         if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
-            if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 5)
+            if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 4)
             {
-                    hasPassedYellowTile = true;
+                hasPassedYellowTile = true;
             }
 
-            
-            
-            else if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 5)
+        {
+            if (hasPassedYellowTile)
             {
-
+                sprite.setColor(Color::Green);
+            }
+            else
+            {
                 newPlayerPosition = playerPosition;
             }
+        }
+
+        else if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
+        {
+
+            newPlayerPosition = playerPosition;
+        }
 
         playerPosition = newPlayerPosition;
 
