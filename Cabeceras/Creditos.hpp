@@ -57,7 +57,7 @@ void Creditos()
 
     RenderWindow window(VideoMode(600, 600), "Creditos");
     
-    while (window.isOpen())
+    while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::Escape))
     {
 
 

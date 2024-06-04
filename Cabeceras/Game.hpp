@@ -12,6 +12,16 @@ int cellSize = 25; // Declaración de cellSizes
 
 void Game()
 {
+    
+    SoundBuffer buffer;
+    if (!buffer.loadFromFile("Assets/The-Complex.wav"))
+    {
+        // Error handling...
+    }
+    Sound sound;
+    sound.setBuffer(buffer);
+    sound.play();
+
     RenderWindow window(VideoMode(screenWidth, screenHeight), "The Backrooms");
     window.setFramerateLimit(60);
 
@@ -337,6 +347,7 @@ void Game()
         window.draw(gun);
         enemy.draw(window);
         enemy2.draw(window);
+
         window.display();
     }
 }

@@ -1,9 +1,20 @@
+#include <SFML/Audio.hpp>
+
 #include "Cabeceras/Game.hpp"
 #include "Cabeceras/menu.hpp"
 #include "Cabeceras/Creditos.hpp"
 
 int main()
 {
+
+    SoundBuffer buffer;
+    if (!buffer.loadFromFile("Assets/Government-Funding.wav"))
+    {
+        // Error handling...
+    }
+    Sound sound;
+    sound.setBuffer(buffer);
+    sound.play();
 
     Font font;
     font.loadFromFile("Assets/Super Normal.ttf");
@@ -12,7 +23,6 @@ int main()
     title.setOutlineColor(Color::Black);
     title.setOutlineThickness(5);
     title.setPosition(25, 15);
-
 
     RenderWindow window(VideoMode(screenWidth, screenHeight), "The Backrooms");
 
@@ -56,7 +66,9 @@ int main()
                     switch (menu.getPressedItem())
                     {
                     case 0:
+                        sound.stop();
                         Game();
+                        sound.play();
                         break;
                     case 1:
                         Creditos();
