@@ -6,6 +6,7 @@
 #include <cstdlib> // Para generar números aleatorios
 using namespace std;
 using namespace sf;
+
 int cellSize = 25; // Declaración de cellSizes
 #include "map.hpp"
 #include "Enemy.hpp"
@@ -13,6 +14,8 @@ int cellSize = 25; // Declaración de cellSizes
 void Game()
 {
     bool hasPassedYellowTile = false;
+    bool gamePaused = false;
+    bool gameWon = false;
 
     SoundBuffer buffer;
     if (!buffer.loadFromFile("Assets/Audios/The-Complex.wav"))
@@ -39,6 +42,15 @@ void Game()
     {
         // Error handling...
     }
+
+    Font font;
+    font.loadFromFile("Assets/Super Normal.ttf");
+
+    Text winText("YOU WON", font, 50);
+    winText.setFillColor(Color::Green);
+    winText.setOutlineColor(Color::Black);
+    winText.setOutlineThickness(5);
+    winText.setPosition(screenWidth / 2 - winText.getLocalBounds().width / 2, screenHeight / 2 - winText.getLocalBounds().height / 2);
 
     window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
@@ -74,18 +86,17 @@ void Game()
 
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 3.0f;
-    float playerHealth = 1000000000000.0f;
+    float playerHealth = 500.0f;
 
     Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
     Enemy enemy2(Vector2f(500.f, 500.f), 2.5f);
-    Enemy enemy3(Vector2f(500.f, 500.f), 2.5f);
 
     vector<CircleShape> bullets;
     vector<float> angles;
     Clock c;
     Clock s;
 
-    while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::BackSpace))
+    while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::BackSpace) && !gameWon)
     {
         Event event;
         while (window.pollEvent(event))
@@ -183,35 +194,57 @@ void Game()
 
             enemy.setPosition(Vector2f(randomX, randomY));
             enemy2.setPosition(Vector2f(randomX2, randomY2));
-            enemy3.setPosition(Vector2f(randomX2, randomY2));
         }
 
         // Comprobamos colisiones con las paredes para el jugador
         int playerCellX = static_cast<int>(newPlayerPosition.x) / cellSize;
         int playerCellY = static_cast<int>(newPlayerPosition.y) / cellSize;
-        
-        if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
-            if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 4)
-            {
-                hasPassedYellowTile = true;
-            }
 
-        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 5)
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 4)
         {
-            if (hasPassedYellowTile)
+            if (!hasPassedYellowTile)
             {
-                sprite.setColor(Color::Green);
+                // Si el jugador no ha tocado ningún cuadro amarillo, reiniciamos su posición
+                newPlayerPosition = playerPosition;
             }
             else
             {
-                newPlayerPosition = playerPosition;
+                // Si el jugador ha tocado al menos un cuadro amarillo, cambiamos el color del sprite
+                sprite.setColor(Color::Green);
             }
         }
 
-        else if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
+        // Verificamos colisiones con los cuadros amarillos (case 5) y actualizamos hasPassedYellowTile si es necesario
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 4)
         {
+            hasPassedYellowTile = true;
+        }
+        else if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 3)
+        {
+            // Si el jugador toca un cuadro verde antes de los amarillos, reiniciamos su posición
+            if (!hasPassedYellowTile)
+            {
+                newPlayerPosition = playerPosition;
+            }
+            else
+            {
+                // Si el jugador ha pasado por los cuadros amarillos y toca el cuadro verde, muestra el texto "YOU WON" y pausa el juego
+                gamePaused = true;
+            }
+        }
 
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 1)
+        {
+            // Si el jugador colisiona con una pared, reiniciamos su posición
             newPlayerPosition = playerPosition;
+        }
+        else if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 3)
+        {
+            // Si el jugador intenta tocar un cuadro verde antes de los amarillos, reiniciamos su posición
+            if (!hasPassedYellowTile)
+            {
+                newPlayerPosition = playerPosition;
+            }
         }
 
         playerPosition = newPlayerPosition;
@@ -242,16 +275,13 @@ void Game()
                     cell.setFillColor(Color::Blue); // Otro tipo de celda
                     break;
                 case 3:
-                    cell.setFillColor(Color::Yellow); // Otro tipo de celda
+                    cell.setFillColor(Color::Green); // Ganar
                     break;
                 case 4:
-                    cell.setFillColor(Color::Green); // Celda peligrosa
+                    cell.setFillColor(Color::Yellow); // Llave
                     break;
                 case 5:
-                    cell.setFillColor(Color::Yellow); // Premio
-                    break;
-                case 6:
-                    cell.setFillColor(Color::Cyan); // Premio
+                    cell.setFillColor(Color::Cyan); // Shotgun
                     break;
                 default:
                     cell.setFillColor(Color(0, 0, 0, 0)); // Espacio vacío
@@ -375,7 +405,29 @@ void Game()
         enemy.draw(window);
         enemy2.draw(window);
 
+        if (gamePaused)
+        {
+            window.draw(winText);
+        }
+
         window.display();
+    }
+
+    if (gameWon)
+    {
+        window.draw(winText);
+        window.display();
+        while (window.isOpen())
+        {
+            Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == Event::Closed)
+                {
+                    window.close();
+                }
+            }
+        }
     }
 }
 
