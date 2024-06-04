@@ -12,7 +12,8 @@ int cellSize = 25; // Declaración de cellSizes
 
 void Game()
 {
-    
+    bool hasPassedYellowTile = false;
+
     SoundBuffer buffer;
     if (!buffer.loadFromFile("Assets/Audios/The-Complex.wav"))
     {
@@ -74,7 +75,7 @@ void Game()
 
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 3.0f;
-    float playerHealth = 100.0f;
+    float playerHealth = 1000000000000.0f;
 
     Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
     Enemy enemy2(Vector2f(500.f, 500.f), 2.5f);
@@ -83,6 +84,7 @@ void Game()
     vector<CircleShape> bullets;
     vector<float> angles;
     Clock c;
+    Clock s;
 
     while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::BackSpace))
     {
@@ -128,7 +130,9 @@ void Game()
             // Cambiar la textura del jugador para simular la animación de caminar
             sprite.setTexture(playerWalkTextures[currentWalkFrame]);
             // Incrementar el índice del frame de la animación
+            
             currentWalkFrame = (currentWalkFrame + 1) % playerWalkTextures.size();
+            
         }
         else
         {
@@ -190,10 +194,11 @@ void Game()
         if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
             if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 5)
             {
-                // Si el jugador intenta moverse a una celda no permitida, no actualizamos su posición
-                sprite.setColor(Color::Red);
+                    hasPassedYellowTile = true;
             }
 
+            
+            
             else if (worldMaps[currentMapIndex][playerCellY][playerCellX] != 0)
             {
 
@@ -231,7 +236,7 @@ void Game()
                     cell.setFillColor(Color::Yellow); // Otro tipo de celda
                     break;
                 case 4:
-                    cell.setFillColor(Color::Red); // Celda peligrosa
+                    cell.setFillColor(Color::Green); // Celda peligrosa
                     break;
                 case 5:
                     cell.setFillColor(Color::Yellow); // Premio
