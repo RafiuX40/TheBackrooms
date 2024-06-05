@@ -69,6 +69,7 @@ int main()
                     case 0:
                         sound.stop();
                         Game();
+                        currentMapIndex = 0;
                         sound.play();
                         break;
                     case 1:

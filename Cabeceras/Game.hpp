@@ -88,7 +88,7 @@ void Game()
 
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 3.0f;
-    float playerHealth = 500.0f;
+    float playerHealth = 200.0f;
 
     Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
     Enemy enemy2(Vector2f(500.f, 500.f), 2.5f);
@@ -381,7 +381,8 @@ void Game()
                 if (playerHealth <= 0)
                 {
                     // El jugador ha perdido, puedes hacer lo que necesites aquí
-                    window.close(); // Por ejemplo, cerrar la ventana del juego
+                    window.close();
+                    currentMapIndex = 0; // Por ejemplo, cerrar la ventana del juego
                 }
             }
         }
@@ -439,6 +440,7 @@ void Game()
                 if (event.type == Event::Closed)
                 {
                     window.close();
+                    currentMapIndex = 0;
                 }
             }
         }
