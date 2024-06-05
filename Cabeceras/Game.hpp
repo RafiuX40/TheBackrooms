@@ -8,6 +8,8 @@ using namespace std;
 using namespace sf;
 
 int cellSize = 25; // Declaración de cellSizes
+int dmg = 10;
+
 #include "map.hpp"
 #include "Enemy.hpp"
 
@@ -247,6 +249,18 @@ void Game()
             }
         }
 
+        if (worldMaps[currentMapIndex][playerCellY][playerCellX] == 5)
+        {
+            // Cambiar el sprite de la pistola
+            arma.loadFromFile("Assets/Shotgun.png");
+            gun.setTexture(arma);
+
+            shot.loadFromFile("Assets/Audios/ShotShotgun.wav");
+
+            // Cambiar el valor de dmg
+            dmg = 50; // Por ejemplo, incrementar el daño a 20
+        }
+
         playerPosition = newPlayerPosition;
 
         // Actualizamos la posición del enemigo persiguiendo al jugador
@@ -307,7 +321,7 @@ void Game()
                 if (bullets[i].getGlobalBounds().intersects(enemy.getGlobalBounds()))
                 {
                     // Reducir la vida del enemigo
-                    enemy.reduceHealth(10); // Por ejemplo, reduce la vida en 10 puntos
+                    enemy.reduceHealth(dmg); // Por ejemplo, reduce la vida en 10 puntos
                     // Eliminar el proyectil
                     bullets.erase(bullets.begin() + i);
                     angles.erase(angles.begin() + i);
@@ -349,7 +363,7 @@ void Game()
             }
         }
 
-        if (sprite.getGlobalBounds().intersects(enemy.getGlobalBounds()))
+        if (sprite.getGlobalBounds().intersects(enemy.getGlobalBounds()) && sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
         {
             // Reducir la salud del jugador si hay colisión con enemy
             playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
