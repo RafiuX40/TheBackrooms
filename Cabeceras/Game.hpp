@@ -113,7 +113,7 @@ void Game()
 
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 3.0f;
-    float playerHealth = 1000000.0f;
+    float playerHealth = 250.0f;
 
     Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
     Enemy enemy2(Vector2f(200.f, 500.f), 2.5f);
