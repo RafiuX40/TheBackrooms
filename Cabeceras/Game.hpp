@@ -2,22 +2,22 @@
 #define Game_hpp
 
 #include <SFML/Graphics.hpp>
-#include <cmath> //Para calcular angulos
+#include <cmath>   //Para calcular angulos
 #include <cstdlib> // Para generar números aleatorios
 using namespace std;
 using namespace sf;
 
 int cellSize = 25; // Declaración de cellSizes
-int dmg = 10;//Declaracion de daño
+int dmg = 10;      // Declaracion de daño
 
 #include "map.hpp"
 #include "Enemy.hpp"
 
 void Game()
 {
-    bool hasPassedYellowTile = false;
-    bool gamePaused = false;
-    bool gameWon = false;
+    bool hasPassedYellowTile = false; // Para la "Llave"
+    bool gamePaused = false;          // si el juego es pausado
+    bool gameWon = false;             // Si ganaste el juego
 
     SoundBuffer buffer;
     if (!buffer.loadFromFile("Assets/Audios/The-Complex.wav"))
@@ -65,10 +65,35 @@ void Game()
     Texture walkTexture2;
     walkTexture2.loadFromFile("Assets/Player/Walk-2.png");
 
-    vector<Texture> playerWalkTextures = {walkTexture1, walkTexture2}; // Vector de texturas de la animación
+    Texture walkUpTexture1;
+    walkUpTexture1.loadFromFile("Assets/Player/WalkUp1.png");
+
+    Texture walkUpTexture2;
+    walkUpTexture2.loadFromFile("Assets/Player/WalkUp2.png");
+
+    Texture walkLeftTexture1;
+    walkLeftTexture1.loadFromFile("Assets/Player/Walkleft1.png");
+
+    Texture walkLeftTexture2;
+    walkLeftTexture2.loadFromFile("Assets/Player/Walkleft2.png");
+
+    Texture walkRightTexture1;
+    walkRightTexture1.loadFromFile("Assets/Player/Walkright1.png");
+
+    Texture walkRightTexture2;
+    walkRightTexture2.loadFromFile("Assets/Player/Walkright2.png");
+
+    // Vectores de texturas de las animaciónes
+    vector<Texture> playerWalkTextures = {walkTexture1, walkTexture2};
+    vector<Texture> playerWalkUpTextures = {walkUpTexture1, walkUpTexture2};
+    vector<Texture> playerWalkLeftTextures = {walkLeftTexture1, walkLeftTexture2};
+    vector<Texture> playerWalkRightTextures = {walkRightTexture1, walkRightTexture2};
 
     int currentWalkFrame = 0; // Índice de la textura actual de la animación
     bool isWalking = false;   // Estado de la animación
+    bool isUpWalking = false;
+    bool isLeftWalking = false;
+    bool isRightWalking = false;
 
     Sprite sprite;
     sprite.setTexture(textura);
@@ -88,15 +113,14 @@ void Game()
 
     Vector2f playerPosition(100.f, 100.f);
     float playerSpeed = 3.0f;
-    float playerHealth = 200.0f;
+    float playerHealth = 1000000.0f;
 
     Enemy enemy(Vector2f(500.f, 500.f), 2.5f); // Creamos un enemigo en una posición y velocidad específicas
-    Enemy enemy2(Vector2f(500.f, 500.f), 2.5f);
+    Enemy enemy2(Vector2f(200.f, 500.f), 2.5f);
 
     vector<CircleShape> bullets;
     vector<float> angles;
     Clock c;
-    Clock s;
 
     while (window.isOpen() && !Keyboard::isKeyPressed(Keyboard::BackSpace) && !gameWon)
     {
@@ -117,7 +141,7 @@ void Game()
         if (Keyboard::isKeyPressed(Keyboard::D))
             newPlayerPosition.x += playerSpeed;
 
-        //Estos es para cuando disparemos
+        // Estos es para cuando disparemos
         if (Mouse::isButtonPressed(Mouse::Left) && c.getElapsedTime().asSeconds() > 0.5)
         {
             bullets.push_back(CircleShape());
@@ -129,8 +153,34 @@ void Game()
             c.restart();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::S) ||
-            Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
+        if (Keyboard::isKeyPressed(Keyboard::W))
+        {
+            isUpWalking = true; // El jugador está caminando si alguna tecla de movimiento está presionada
+        }
+        else
+        {
+            isUpWalking = false; // El jugador no está caminando si ninguna tecla de movimiento está presionada
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::A))
+        {
+            isLeftWalking = true; // El jugador está caminando si alguna tecla de movimiento está presionada
+        }
+        else
+        {
+            isLeftWalking = false; // El jugador no está caminando si ninguna tecla de movimiento está presionada
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::D))
+        {
+            isRightWalking = true; // El jugador está caminando si alguna tecla de movimiento está presionada
+        }
+        else
+        {
+            isRightWalking = false; // El jugador no está caminando si ninguna tecla de movimiento está presionada
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::S))
         {
             isWalking = true; // El jugador está caminando si alguna tecla de movimiento está presionada
         }
@@ -138,6 +188,7 @@ void Game()
         {
             isWalking = false; // El jugador no está caminando si ninguna tecla de movimiento está presionada
         }
+
 
         if (isWalking)
         {
@@ -151,6 +202,33 @@ void Game()
         {
             // El jugador no está caminando, usar la textura estática
             sprite.setTexture(textura);
+        }
+
+        if (isUpWalking)
+        {
+            // Cambiar la textura del jugador para simular la animación de caminar
+            sprite.setTexture(playerWalkUpTextures[currentWalkFrame]);
+            // Incrementar el índice del frame de la animación
+
+            currentWalkFrame = (currentWalkFrame + 1) % playerWalkUpTextures.size();
+        }
+
+        if (isRightWalking)
+        {
+            // Cambiar la textura del jugador para simular la animación de caminar
+            sprite.setTexture(playerWalkRightTextures[currentWalkFrame]);
+            // Incrementar el índice del frame de la animación
+
+            currentWalkFrame = (currentWalkFrame + 1) % playerWalkRightTextures.size();
+        }
+
+        if (isLeftWalking)
+        {
+            // Cambiar la textura del jugador para simular la animación de caminar
+            sprite.setTexture(playerWalkLeftTextures[currentWalkFrame]);
+            // Incrementar el índice del frame de la animación
+
+            currentWalkFrame = (currentWalkFrame + 1) % playerWalkLeftTextures.size();
         }
 
         // Limitamos la posición del jugador dentro de la ventana
@@ -365,7 +443,7 @@ void Game()
             }
         }
 
-        if (sprite.getGlobalBounds().intersects(enemy.getGlobalBounds()) && sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
+        if (sprite.getGlobalBounds().intersects(enemy.getGlobalBounds()))
         {
             // Reducir la salud del jugador si hay colisión con enemy
             playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
@@ -375,17 +453,17 @@ void Game()
                 window.close(); // Por ejemplo, cerrar la ventana del juego
                 currentMapIndex = 0;
             }
+        }
 
-            if (sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
+        if (sprite.getGlobalBounds().intersects(enemy2.getGlobalBounds()))
+        {
+            // Reducir la salud del jugador si hay colisión con enemy2
+            playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
+            if (playerHealth <= 0)
             {
-                // Reducir la salud del jugador si hay colisión con enemy2
-                playerHealth -= 10; // Por ejemplo, reduce 10 puntos de salud
-                if (playerHealth <= 0)
-                {
-                    // El jugador ha perdido, puedes hacer lo que necesites aquí
-                    window.close();
-                    currentMapIndex = 0; // Por ejemplo, cerrar la ventana del juego
-                }
+                // El jugador ha perdido, puedes hacer lo que necesites aquí
+                window.close();
+                currentMapIndex = 0; // Por ejemplo, cerrar la ventana del juego
             }
         }
 
