@@ -2,13 +2,13 @@
 #define Game_hpp
 
 #include <SFML/Graphics.hpp>
-#include <cmath>
+#include <cmath> //Para calcular angulos
 #include <cstdlib> // Para generar números aleatorios
 using namespace std;
 using namespace sf;
 
 int cellSize = 25; // Declaración de cellSizes
-int dmg = 10;
+int dmg = 10;//Declaracion de daño
 
 #include "map.hpp"
 #include "Enemy.hpp"
@@ -117,9 +117,11 @@ void Game()
         if (Keyboard::isKeyPressed(Keyboard::D))
             newPlayerPosition.x += playerSpeed;
 
+        //Estos es para cuando disparemos
         if (Mouse::isButtonPressed(Mouse::Left) && c.getElapsedTime().asSeconds() > 0.5)
         {
             bullets.push_back(CircleShape());
+            bullets.back().setFillColor(Color::Yellow);
             bullets.back().setRadius(5);
             bullets.back().setPosition(sprite.getPosition());
             angles.push_back(atan2(Mouse::getPosition(window).y - sprite.getPosition().y, Mouse::getPosition(window).x - sprite.getPosition().x));

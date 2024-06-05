@@ -7,10 +7,6 @@ using namespace sf;
 
 #define MAX_NUMBER_OF_ITEMS 4
 
-
-// Velocidad de los jugadores
-
-
 class Menu // Clase menu principal
 {
 public:
